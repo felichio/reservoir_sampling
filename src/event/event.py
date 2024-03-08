@@ -1,8 +1,8 @@
 from enum import Enum
 
 class EventType(Enum):
+    EOS = 0
     ITEM_RCV = 1
-    EOS = 2
 
 
 class Event:
