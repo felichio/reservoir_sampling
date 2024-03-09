@@ -1,6 +1,9 @@
 from input.stream_data import StreamData
 from event.event import Event
+from event.event import EventType
 from input.csv_reader import CsvReader
+from event.event_queue import EventQueue
+from consumer.dummy import Dummy
 
 data = [(1, 2), (3, 4), (5, 6), (7, 9)]
 
@@ -24,7 +27,12 @@ def main():
         queue.append(ev)
         print(ev.event_type, ev.payload)
 
-    
+    eq = EventQueue()
+    dummy1 = Dummy()
+    dummy2 = Dummy()
+    eq.subscribe(EventType.ITEM_RCV, dummy1)
+    eq.subscribe(EventType.ITEM_RCV, dummy2)
+    eq.dispatch(Event.create_itemrcv(10, 100))
 
 
 
