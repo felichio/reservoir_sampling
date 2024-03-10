@@ -12,7 +12,8 @@ class EventQueue:
             self.event_listeners[event_name] = []
         
 
-
+    def enqueue(self, event):
+        self.queue.put(event)
 
 
     def dispatch(self, event):
@@ -22,3 +23,16 @@ class EventQueue:
 
     def subscribe(self, event_type, listener):
         self.event_listeners[event_type].append(listener)
+
+    
+    def run(self):
+        while True:
+            print("blocked")
+            ev = self.queue.get()
+            print(f"dispatching {ev}")
+            self.dispatch(ev)
+
+
+            # end condition
+            if ev.event_type == EventType.EOS:
+                break

@@ -37,8 +37,8 @@ class CsvReader:
             return ()
             
     def values(self):
-        return list(map(lambda l: tuple(l), self.value_list))
+        return list(map(lambda l: tuple((float(l[i]) for i in range(len(l)))), self.value_list))
 
     def values_d(self, columns):
         columns = list(filter(lambda c: c > 0 and c < len(self.value_list[0]) + 1, columns))
-        return list(map(lambda l: tuple([l[c - 1] for c in columns]), self.value_list))
+        return list(map(lambda l: tuple([float(l[c - 1]) for c in columns]), self.value_list))
