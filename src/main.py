@@ -20,7 +20,7 @@ def main():
     qt.start()
 
     
-    values = CsvReader(input_path).values_d([1, 2, 3, 4, 5])
+    values = CsvReader(input_path).values_d([1])
     head = CsvReader(input_path).head_d([1, 2, 3, 4, 5])
     
     dimension = len(values[0])
@@ -43,8 +43,8 @@ def main():
     
 
     qt.join()
-    print(eh.eras[-1].reservoir_buffer_mean)
-    print(eh.eras[-1].reservoir_buffer_variance)
+    print(eh.eras[-1].reservoir_variance_snapshots)
+    # print(eh.eras[-1].reservoir_mean_snapshots)
     
 
 

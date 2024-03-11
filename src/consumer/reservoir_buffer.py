@@ -1,4 +1,6 @@
 import random
+from event.event import EventType
+
 
 class ReservoirBuffer:
 
@@ -7,11 +9,15 @@ class ReservoirBuffer:
         self.size = size
         self.dimension = dimension
         self.buffer = []
+        self.buffer_snapshots = []
 
 
         # statistics
         self.mean = [0.0 for _ in range(dimension)]
         self.variance = [0.0 for _ in range(dimension)]
+
+        self.mean_snapshots = []
+        self.variance_snapshots = []
 
         # previous step
         self.mean_pre = [0.0 for _ in range(dimension)]
@@ -33,41 +39,59 @@ class ReservoirBuffer:
         for i in range(self.dimension):
             self.variance[i] = self.variance[i] + (inserted_value[i] ** 2 - removed_value[i] ** 2) / n + self.mean_pre[i] ** 2 - self.mean[i] ** 2
 
-    def consume(self, event):
-        print(f"ReservoirBuffer consuming {event.event_type} with payload {event.payload}")
-        if len(self.buffer) < self.size:
-            self.buffer.append(event.payload["value"])
-            # Copy the streams moving statistics
-            self.mean_pre = self.era_handler.stream_buffer.mean_pre[:]
-            self.mean = self.era_handler.stream_buffer.mean[:]
-            self.variance_pre = self.era_handler.stream_buffer.variance_pre[:]
-            self.variance = self.era_handler.stream_buffer.variance[:]
+    def snap(self, diff):
+        if diff:
+            self.buffer_snapshots.append(self.buffer[:])
+            self.mean_snapshots.append(self.mean[:])
+            self.variance_snapshots.append(self.variance[:])
         else:
-            # Run AlgorithmR
-            print("Running AlgorithR")
-            # take number of stream elements seen
-            n = len(self.era_handler.stream_buffer.buffer)
-            index = ReservoirBuffer.R(n, self.size)
-            print("index: ", index)
-            if index < self.size:
-                # save removed value
-                removed_value = self.buffer[index]
-                inserted_value = event.payload["value"]
-                # swap new with old
-                self.buffer[index] = inserted_value
-                # calculate new buffer statistics
-                self.calculate_mean(removed_value, inserted_value)
-                self.calculate_variance(removed_value, inserted_value)
+            self.buffer_snapshots.append(["-"])
+            self.mean_snapshots.append(["-"])
+            self.variance_snapshots.append(["-"])
 
-                # check era handler
-                pass
+    def consume(self, event):
+        if event.event_type == EventType.ITEM_RCV:
+            print(f"ReservoirBuffer consuming {event.event_type} with payload {event.payload}")
+            if len(self.buffer) < self.size:
+                self.buffer.append(event.payload["value"])
+                # Copy the streams moving statistics
+                self.mean_pre = self.era_handler.stream_buffer.mean_pre[:]
+                self.mean = self.era_handler.stream_buffer.mean[:]
+                self.variance_pre = self.era_handler.stream_buffer.variance_pre[:]
+                self.variance = self.era_handler.stream_buffer.variance[:]
+
+                # Take then snapshots
+                self.snap(True)
             else:
-                pass
+                # Run AlgorithmR
+                print("Running AlgorithR")
+                # take number of stream elements seen
+                n = len(self.era_handler.stream_buffer.buffer)
+                index = ReservoirBuffer.R(n, self.size)
+                print("index: ", index)
+                if index < self.size:
+                    # save removed value
+                    removed_value = self.buffer[index]
+                    inserted_value = event.payload["value"]
+                    # swap new with old
+                    self.buffer[index] = inserted_value
+                    # calculate new buffer statistics
+                    self.calculate_mean(removed_value, inserted_value)
+                    self.calculate_variance(removed_value, inserted_value)
 
-        print("---- Reservoir stats ----")
-        print("Reservoir: ", self.buffer)        
-        print("mean: ", self.mean)
-        print("variance: ", self.variance)
+                    # Take snaps
+                    self.snap(True)
+
+                    # check era handler
+                    pass
+                else:
+                    self.snap(False)
+                    pass
+
+            print("---- Reservoir stats ----")
+            print("Reservoir: ", self.buffer)        
+            print("mean: ", self.mean)
+            print("variance: ", self.variance)
 
 
     def register_era_handler(self, era_handler):

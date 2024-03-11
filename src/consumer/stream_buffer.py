@@ -1,4 +1,4 @@
-
+from event.event import EventType
 
 
 class StreamBuffer:
@@ -11,6 +11,9 @@ class StreamBuffer:
         # statistics
         self.mean = [0.0 for _ in range(dimension)]
         self.variance = [0.0 for _ in range(dimension)]
+
+        self.mean_snapshots = []
+        self.variance_snapshots = []
 
         # previous step
         self.mean_pre = [0.0 for _ in range(dimension)]
@@ -31,17 +34,25 @@ class StreamBuffer:
         for i in range(self.dimension):
             self.variance[i] = (n - 1) / n * self.variance[i] + (n - 1) / (n ** 2) * (inserted_value[i] - self.mean_pre[i]) ** 2
 
+    def snap(self):
+        self.mean_snapshots.append(self.mean[:])
+        self.variance_snapshots.append(self.variance[:])
 
     def consume(self, event):
-        self.buffer.append(event.payload["value"])
-        print(f"StreamBuffer consuming {event.event_type} with payload {event.payload}")
+        if event.event_type == EventType.ITEM_RCV:
+            self.buffer.append(event.payload["value"])
+            print(f"StreamBuffer consuming {event.event_type} with payload {event.payload}")
 
-        # Calculate stats
-        self.calculate_mean(event.payload["value"])
-        self.calculate_variance(event.payload["value"])
-        print("---- Stream stats ----")
-        print("mean: ", self.mean)
-        print("variance: ", self.variance)
+            # Calculate stats
+            self.calculate_mean(event.payload["value"])
+            self.calculate_variance(event.payload["value"])
+
+            # Take snaps
+            self.snap()
+
+            print("---- Stream stats ----")
+            print("mean: ", self.mean)
+            print("variance: ", self.variance)
         
         
         
