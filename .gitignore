@@ -1,4 +1,5 @@
 venv/
 __pycache__/
 src/input/*.csv
+!src/input/simple.csv
 src/input/*.txt

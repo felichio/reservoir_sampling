@@ -19,8 +19,9 @@ def main():
     qt.start()
 
     
-    values = CsvReader("src/input/small_dataset.csv").values_d([1, 2])
-    head = CsvReader("src/input/simple.csv").head_d([1])
+    values = CsvReader("src/input/simple.csv").values_d([1, 2, 3, 4, 5])
+    head = CsvReader("src/input/simple.csv").head_d([1, 2, 3, 4, 5])
+    print(head)
     dimension = len(values[0])
 
     sb = StreamBuffer(dimension)
