@@ -52,7 +52,7 @@ class EraHandler:
 
 
     def write_to_output(self):
-        output_path = os.path.join(os.path.dirname(__file__), "..", "output")
+        output_path = os.path.join(os.path.dirname(__file__), "..", "..", "output")
         if not os.path.exists(output_path):
             os.makedirs(output_path)
 
