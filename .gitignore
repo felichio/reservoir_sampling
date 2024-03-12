@@ -3,3 +3,4 @@ __pycache__/
 src/input/*.csv
 !src/input/simple.csv
 src/input/*.txt
+output/
