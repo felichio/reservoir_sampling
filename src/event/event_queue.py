@@ -31,7 +31,7 @@ class EventQueue:
             ev = self.queue.get()
             print(f"dispatching {ev}")
             self.dispatch(ev)
-
+            self.queue.task_done()
 
             # end condition
             if ev.event_type == EventType.EOS:
