@@ -11,6 +11,7 @@ from config.config import settings
 
 input_path = settings["input"]
 reservoir_size = settings["reservoir_size"]
+columns = settings["columns"]
 
 def main():
     eq = EventQueue()
@@ -20,8 +21,8 @@ def main():
     qt.start()
 
     
-    values = CsvReader(input_path).values_d([1])
-    head = CsvReader(input_path).head_d([1, 2, 3, 4, 5])
+    values = CsvReader(input_path).values_d(columns)
+    head = CsvReader(input_path).head_d(columns)
     
     dimension = len(values[0])
 
@@ -45,6 +46,7 @@ def main():
     qt.join()
     print(eh.eras[-1].reservoir_variance_snapshots)
     # print(eh.eras[-1].reservoir_mean_snapshots)
+    
     
 
 

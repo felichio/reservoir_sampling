@@ -48,7 +48,8 @@ class EraHandler:
 
 
         # reset stream_buffer and reservoir_buffer states
-        # todo
+        self.stream_buffer.clear_state()
+        self.reservoir_buffer.clear_state()
     
     def consume(self, event):
         if event.event_type == EventType.EOS:

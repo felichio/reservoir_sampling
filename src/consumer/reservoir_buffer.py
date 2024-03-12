@@ -8,20 +8,24 @@ class ReservoirBuffer:
     def __init__(self, size, dimension):
         self.size = size
         self.dimension = dimension
+        
+        self.clear_state()
+
+    def clear_state(self):
         self.buffer = []
         self.buffer_snapshots = []
 
 
         # statistics
-        self.mean = [0.0 for _ in range(dimension)]
-        self.variance = [0.0 for _ in range(dimension)]
+        self.mean = [0.0 for _ in range(self.dimension)]
+        self.variance = [0.0 for _ in range(self.dimension)]
 
         self.mean_snapshots = []
         self.variance_snapshots = []
 
         # previous step
-        self.mean_pre = [0.0 for _ in range(dimension)]
-        self.variance_pre = [0.0 for _ in range(dimension)]
+        self.mean_pre = [0.0 for _ in range(self.dimension)]
+        self.variance_pre = [0.0 for _ in range(self.dimension)]
 
     def calculate_mean(self, removed_value, inserted_value):
         n = self.size

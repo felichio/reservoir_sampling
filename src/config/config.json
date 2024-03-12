@@ -1,4 +1,5 @@
 {
     "input": "simple.csv",
-    "reservoir_size": 5
+    "reservoir_size": 5,
+    "columns": [1, 2]
 }
