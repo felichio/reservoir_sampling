@@ -2,7 +2,8 @@ from enum import Enum
 
 class EventType(Enum):
     EOS = 0
-    ITEM_RCV = 1
+    SOS = 1
+    ITEM_RCV = 2
 
 
 class Event:
@@ -20,7 +21,11 @@ class Event:
     @staticmethod
     def create_itemrcv(index, value):
         return Event(EventType.ITEM_RCV, {"index": index, "value": value})
-        
+    
     @staticmethod
-    def create_eos():
-        return Event(EventType.EOS)
+    def create_sos(queue):
+        return Event(EventType.SOS, {"recipient_queue": queue})
+
+    @staticmethod
+    def create_eos(queue):
+        return Event(EventType.EOS, {"recipient_queue": queue})
