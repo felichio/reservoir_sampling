@@ -1,6 +1,7 @@
 import threading
 import queue
 from event.event import EventType
+from event.event import Event
 
 class EventQueue:
     
@@ -25,6 +26,9 @@ class EventQueue:
     def subscribe(self, event_type, listener):
         self.event_listeners[event_type].append(listener)
 
+
+    def finish(self, queue = None):
+        self.enqueue(Event.create_finish(queue))
     
     def run(self):
         while True:
@@ -35,5 +39,5 @@ class EventQueue:
             self.queue.task_done()
 
             # end condition
-            if ev.event_type == EventType.EOS:
+            if ev.event_type == EventType.QUEUE_FSH:
                 break

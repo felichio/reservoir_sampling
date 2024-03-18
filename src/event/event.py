@@ -4,6 +4,7 @@ class EventType(Enum):
     EOS = 0
     SOS = 1
     ITEM_RCV = 2
+    QUEUE_FSH = 10
 
 
 class Event:
@@ -29,3 +30,7 @@ class Event:
     @staticmethod
     def create_eos(queue = None):
         return Event(EventType.EOS, {"recipient_queue": queue})
+
+    @staticmethod
+    def create_finish(queue = None):
+        return Event(EventType.QUEUE_FSH, {"recipient_queue": queue})

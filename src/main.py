@@ -8,6 +8,7 @@ from consumer.stream_buffer import StreamBuffer
 from consumer.reservoir_buffer import ReservoirBuffer
 from consumer.era_handler import EraHandler
 from producer.stream_item_generator import StreamItemGenerator
+from producer.queue_finish import QueueFinish
 from config.config import settings
 
 input_path = settings["input"]
@@ -48,6 +49,7 @@ def main():
     stream_item_gen = StreamItemGenerator(sdd.get_stream_iterator())
     peq.subscribe(EventType.SOS, stream_item_gen)
     peq.subscribe(EventType.EOS, stream_item_gen)
+    peq.subscribe(EventType.QUEUE_FSH, QueueFinish())
     
     # send SOS event
     peq.enqueue(Event.create_sos(ceq))
@@ -55,6 +57,8 @@ def main():
     peq.enqueue(Event.create_eos(ceq))
 
     
+    # finish queues
+    peq.finish(ceq)
 
     ceq_thread.join()
     peq_thread.join()
