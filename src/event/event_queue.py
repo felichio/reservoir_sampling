@@ -5,9 +5,10 @@ from event.event import EventType
 class EventQueue:
     
 
-    def __init__(self):
+    def __init__(self, title):
         self.queue = queue.Queue()
         self.event_listeners = {}
+        self.title = title
         for event_name in list(EventType):
             self.event_listeners[event_name] = []
         
@@ -27,9 +28,9 @@ class EventQueue:
     
     def run(self):
         while True:
-            print("blocked")
+            print(f"{self.title} blocked")
             ev = self.queue.get()
-            print(f"dispatching {ev}")
+            print(f"{self.title} queue dispatching type: {ev.event_type} - {ev}")
             self.dispatch(ev)
             self.queue.task_done()
 

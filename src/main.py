@@ -15,8 +15,8 @@ reservoir_size = settings["reservoir_size"]
 columns = settings["columns"]
 
 def main():
-    ceq = EventQueue()
-    peq = EventQueue()
+    ceq = EventQueue("consumer")
+    peq = EventQueue("producer")
     print(settings)
     # Start the queue thread
     ceq_thread = threading.Thread(target = ceq.run, args = (), daemon = True)
@@ -48,8 +48,10 @@ def main():
     stream_item_gen = StreamItemGenerator(sdd.get_stream_iterator())
     peq.subscribe(EventType.SOS, stream_item_gen)
     peq.subscribe(EventType.EOS, stream_item_gen)
-    # send EOS event
+    
+    # send SOS event
     peq.enqueue(Event.create_sos(ceq))
+    # send EOS event
     peq.enqueue(Event.create_eos(ceq))
 
     

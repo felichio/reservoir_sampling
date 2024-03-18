@@ -19,13 +19,13 @@ class Event:
         return payload
     
     @staticmethod
-    def create_itemrcv(index, value):
-        return Event(EventType.ITEM_RCV, {"index": index, "value": value})
+    def create_itemrcv(index, value, queue = None):
+        return Event(EventType.ITEM_RCV, {"recipient_queue": queue, "index": index, "value": value})
     
     @staticmethod
-    def create_sos(queue):
+    def create_sos(queue = None):
         return Event(EventType.SOS, {"recipient_queue": queue})
 
     @staticmethod
-    def create_eos(queue):
+    def create_eos(queue = None):
         return Event(EventType.EOS, {"recipient_queue": queue})
