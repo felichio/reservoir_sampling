@@ -1,8 +1,8 @@
 {
-    "input": "DATASET_CMA_CGM_NERVAL_no_date_5m.csv",
+    "input": "simple.csv",
     "reservoir_size": 5,
     "columns": [
-        5
+        3
     ],
-    "output_directory_number": 1200
+    "output_directory_number": 1205
 }

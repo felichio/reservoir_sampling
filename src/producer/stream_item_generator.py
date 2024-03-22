@@ -13,5 +13,5 @@ class StreamItemGenerator:
                 ceq.enqueue(Event.create_itemrcv(i + 1, item))
         elif event.event_type == EventType.EOS:
             ceq = event.payload["recipient_queue"]
-            ceq.enqueue(Event.create_eos())
+            ceq.eos()
 

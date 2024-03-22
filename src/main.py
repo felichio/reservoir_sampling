@@ -52,11 +52,10 @@ def main():
     peq.subscribe(EventType.QUEUE_FSH, QueueFinish())
     
     # send SOS event
-    peq.enqueue(Event.create_sos(ceq))
+    peq.sos(ceq)
     # send EOS event
-    peq.enqueue(Event.create_eos(ceq))
+    peq.eos(ceq)
 
-    
     # finish queues
     peq.finish(ceq)
 

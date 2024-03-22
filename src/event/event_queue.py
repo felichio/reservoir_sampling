@@ -27,6 +27,12 @@ class EventQueue:
         self.event_listeners[event_type].append(listener)
 
 
+    def sos(self, queue = None):
+        self.enqueue(Event.create_sos(queue))
+
+    def eos(self, queue = None):
+        self.enqueue(Event.create_eos(queue))
+
     def finish(self, queue = None):
         self.enqueue(Event.create_finish(queue))
     
