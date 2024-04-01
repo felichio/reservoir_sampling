@@ -23,7 +23,7 @@ class EraHandler:
         def fill_dict(self, output, field_name, values):
             temp = {}
             for i, item in enumerate(values):
-                temp[i] = item
+                temp[i + 1] = item
             output[field_name] = temp
 
         def to_json(self):
