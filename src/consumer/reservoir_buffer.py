@@ -1,4 +1,5 @@
 import random
+import math
 from event.event import EventType
 
 
@@ -19,9 +20,11 @@ class ReservoirBuffer:
         # statistics
         self.mean = [0.0 for _ in range(self.dimension)]
         self.variance = [0.0 for _ in range(self.dimension)]
+        self.coefficientvar = [0.0 for _ in range(self.dimension)]
 
         self.mean_snapshots = []
         self.variance_snapshots = []
+        self.coefficientvar_snapshots = []
 
         # previous step
         self.mean_pre = [0.0 for _ in range(self.dimension)]
@@ -43,15 +46,21 @@ class ReservoirBuffer:
         for i in range(self.dimension):
             self.variance[i] = self.variance[i] + (inserted_value[i] ** 2 - removed_value[i] ** 2) / n + self.mean_pre[i] ** 2 - self.mean[i] ** 2
 
+    def calculate_coefficientvar(self):
+        for i in range(self.dimension):
+            self.coefficientvar[i] = math.sqrt(self.variance[i]) / self.mean[i]
+
     def snap(self, diff):
         if diff:
             self.buffer_snapshots.append(self.buffer[:])
             self.mean_snapshots.append(self.mean[:])
             self.variance_snapshots.append(self.variance[:])
+            self.coefficientvar_snapshots.append(self.coefficientvar[:])
         else:
             self.buffer_snapshots.append(["-"])
             self.mean_snapshots.append(["-"])
             self.variance_snapshots.append(["-"])
+            self.coefficientvar_snapshots.append(["-"])
 
     def consume(self, event):
         if event.event_type == EventType.ITEM_RCV:
@@ -63,6 +72,8 @@ class ReservoirBuffer:
                 self.mean = self.era_handler.stream_buffer.mean[:]
                 self.variance_pre = self.era_handler.stream_buffer.variance_pre[:]
                 self.variance = self.era_handler.stream_buffer.variance[:]
+
+                self.coefficientvar = self.era_handler.stream_buffer.coefficientvar[:]
 
                 # Take then snapshots
                 self.snap(True)
@@ -82,6 +93,7 @@ class ReservoirBuffer:
                     # calculate new buffer statistics
                     self.calculate_mean(removed_value, inserted_value)
                     self.calculate_variance(removed_value, inserted_value)
+                    self.calculate_coefficientvar()
 
                     # Take snaps
                     self.snap(True)
@@ -96,6 +108,7 @@ class ReservoirBuffer:
             print("Reservoir: ", self.buffer)        
             print("mean: ", self.mean)
             print("variance: ", self.variance)
+            print("coefficient_var: ", self.coefficientvar)
 
 
     def register_era_handler(self, era_handler):

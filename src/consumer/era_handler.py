@@ -17,6 +17,8 @@ class EraHandler:
             self.reservoir_mean_snapshots = []
             self.stream_variance_snapshots = []
             self.reservoir_variance_snapshots = []
+            self.stream_coefficientvar_snapshots = []
+            self.reservoir_coefficientvar_snapshots = []
         
         def fill_dict(self, output, field_name, values):
             temp = {}
@@ -40,7 +42,8 @@ class EraHandler:
             self.fill_dict(output, "reservoir_mean", self.reservoir_mean_snapshots)
             self.fill_dict(output, "stream_variance", self.stream_variance_snapshots)
             self.fill_dict(output, "reservoir_variance", self.reservoir_variance_snapshots)
-            
+            self.fill_dict(output, "stream_coefficientvar", self.stream_coefficientvar_snapshots)
+            self.fill_dict(output, "reservoir_coefficientvar", self.reservoir_coefficientvar_snapshots)
             return output
 
     def __init__(self, stream_buffer, reservoir_buffer):
@@ -85,11 +88,12 @@ class EraHandler:
         # Take the stream stats
         era.stream_mean_snapshots = copy.deepcopy(self.stream_buffer.mean_snapshots)
         era.stream_variance_snapshots = copy.deepcopy(self.stream_buffer.variance_snapshots)
+        era.stream_coefficientvar_snapshots = copy.deepcopy(self.stream_buffer.coefficientvar_snapshots)
 
         # Take the reservoir stats
         era.reservoir_mean_snapshots = copy.deepcopy(self.reservoir_buffer.mean_snapshots)
         era.reservoir_variance_snapshots = copy.deepcopy(self.reservoir_buffer.variance_snapshots)
-
+        era.reservoir_coefficientvar_snapshots = copy.deepcopy(self.reservoir_buffer.coefficientvar_snapshots)
 
         # reset stream_buffer and reservoir_buffer states
         self.stream_buffer.clear_state()
