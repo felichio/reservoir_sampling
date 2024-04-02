@@ -48,7 +48,12 @@ class ReservoirBuffer:
 
     def calculate_coefficientvar(self):
         for i in range(self.dimension):
-            self.coefficientvar[i] = math.sqrt(self.variance[i]) / self.mean[i]
+            if abs(self.mean[i] - 0.0) < 0.00001:
+                self.coefficientvar[i] = "ND"
+            elif self.variance[i] < 0:
+                self.coefficientvar[i] = 0.0
+            else:
+                self.coefficientvar[i] = math.sqrt(self.variance[i]) / self.mean[i]
 
     def snap(self, diff):
         if diff:
