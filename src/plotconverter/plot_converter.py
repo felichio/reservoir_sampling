@@ -31,6 +31,8 @@ class PlotConverter:
             stream = self.eras[f"era_{self.era_n}"]["stream_coefficientvar"]
             reservoir = self.eras[f"era_{self.era_n}"]["reservoir_coefficientvar"]
 
+
+        self.plot_type = plot_type
         # x axis values
         x = [int(x) for x in stream.keys()]
         
@@ -71,20 +73,39 @@ class PlotConverter:
 
 
     def plot(self, range = None):
+        fig, ax = plt.subplots(1, 2)
+        ax[0].set_xlabel("n")
+        ax[1].set_xlabel("n")
+
+        # choose y labels
+        if self.plot_type == PlotType.MEAN:
+            ax[0].set_ylabel("$\mu(n)$")
+            ax[1].set_ylabel(r"$|\mu_s(n) - \mu_r(n)|$")
+        elif self.plot_type == PlotType.VARIANCE:
+            ax[0].set_ylabel("$\sigma^2(n)$")
+            ax[1].set_ylabel(r"$|\sigma^2_s(n) - \sigma^2_r(n)|$")
+        elif self.plot_type == PlotType.COEFFICIENT_VAR:
+            ax[0].set_ylabel("$Cv(n)$")
+            ax[1].set_ylabel(r"$|Cv_s(n) - Cv_r(n)|$")
+
+
+
         if range == None:
             low = 1
             high = None
         else:
             low = min(range)
             high = max(range)
+            if high - low < 40:
+                ax[0].set_xticks(self.stream_data[0][(low - 1):high])
+                ax[1].set_xticks(self.diff_data[0][(low - 1):high])
+                
 
 
-        fig, ax = plt.subplots(1, 2)
+        
         
         ax[0].plot(self.stream_data[0][(low - 1):high], self.stream_data[1][(low - 1):high], label = "stream")
         ax[0].plot(self.reservoir_data[0][(low - 1):high], self.reservoir_data[1][(low - 1):high], label = "reservoir")
-        # ax[0].set_xticks(self.stream_data[0][(low - 1):high])
         ax[0].legend()
-        print(self.reservoir_data[1][(low - 1):high])
         ax[1].plot(self.diff_data[0][(low - 1):high], self.diff_data[1][(low - 1):high])
         plt.show()

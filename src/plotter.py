@@ -22,7 +22,8 @@ def main():
     eras = read_eras()
     pc = PlotConverter(eras, 1, 1)
     pc.convert(PlotType.COEFFICIENT_VAR)
-    pc.plot([1, 100])
+    pc.plot([1, 3000])
+
     
 
 
