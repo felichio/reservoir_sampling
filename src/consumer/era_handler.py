@@ -8,11 +8,12 @@ class EraHandler:
 
     class Era:
 
-        def __init__(self):
+        def __init__(self, index_offset):
             self.stream_data = []
             self.reservoir_snapshots = []
             
             # stats
+            self.index_offset = index_offset
             self.stream_mean_snapshots = []
             self.reservoir_mean_snapshots = []
             self.stream_variance_snapshots = []
@@ -36,6 +37,7 @@ class EraHandler:
             # for i, item in enumerate(self.reservoir_snapshots):
             #     reservoir[i] = item
             # output["reservoir"] = reservoir
+            output["index_offset"] = self.index_offset
             self.fill_dict(output, "stream_data", self.stream_data)
             self.fill_dict(output, "reservoir", self.reservoir_snapshots)
             self.fill_dict(output, "stream_mean", self.stream_mean_snapshots)
@@ -51,7 +53,7 @@ class EraHandler:
         self.reservoir_buffer = reservoir_buffer
         self.eras = []
         
-        self.eras.append(EraHandler.Era())
+        self.eras.append(EraHandler.Era(0))
 
 
     def write_to_output(self):
@@ -69,12 +71,18 @@ class EraHandler:
         
         with open(os.path.join(output_path, "eras.json"), "w", encoding = "utf-8") as f:
             json.dump(output, f, indent = 2)
-    
-    def is_era_completed(self):
-        pass
+    counter = 0
+    def is_era_completed(self, index_offset):
+        
         # This check is triggered by every insertion happening inside the reservoir buffer.
         # complete_era
         # create a new era
+        EraHandler.counter += 1
+        if EraHandler.counter > 100:
+            print("----CHANGING ERA----")
+            EraHandler.counter = 0
+            self.complete_era()
+            self.eras.append(EraHandler.Era(index_offset))
 
     def complete_era(self):
         print("completing era")

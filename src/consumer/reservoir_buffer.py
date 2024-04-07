@@ -104,7 +104,8 @@ class ReservoirBuffer:
                     self.snap(True)
 
                     # check era handler
-                    pass
+                    # pass also original stream numbering index
+                    self.era_handler.is_era_completed(event.payload["index"])
                 else:
                     self.snap(False)
                     pass
