@@ -3,12 +3,11 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
 
-
-class MeanPlotter:
+class VariancePlotter:
 
     def __init__(self, era_n = "all", dimension_n = 1, simulation_n = "last"):
         self.plot_data = PlotData(era_n, dimension_n, simulation_n)
-        self.data = self.plot_data.get_plot_data(["stream_mean", "reservoir_mean"])
+        self.data = self.plot_data.get_plot_data(["stream_variance", "reservoir_variance"])
 
 
     def diff(self, x, y):
@@ -23,8 +22,8 @@ class MeanPlotter:
         offsets = self.data["offsets"]
         x = self.data["x"]
 
-        stream_mean = self.data["stream_mean"]
-        reservoir_mean = self.data["reservoir_mean"]
+        stream_variance = self.data["stream_variance"]
+        reservoir_variance = self.data["reservoir_variance"]
 
         # split eras for plotting (add nan to the beginning of every skipped era)
         if len(offsets) > 1:
@@ -36,24 +35,24 @@ class MeanPlotter:
                 if (offset[0] + offset[1]) < next_offset[0]:
                     kindex += 1
                     x.insert(kindex, np.nan)
-                    stream_mean.insert(kindex, np.nan)
-                    reservoir_mean.insert(kindex, np.nan)
-        
-        diff_mean = self.diff(stream_mean, reservoir_mean)
-        
+                    stream_variance.insert(kindex, np.nan)
+                    reservoir_variance.insert(kindex, np.nan)
+
+
+        diff_variance = self.diff(stream_variance, reservoir_variance)
 
         fig, ax = plt.subplots(2, 1)
         ax[0].set_xlabel("n")
         ax[1].set_xlabel("n")
 
-        ax[0].set_ylabel("$\mu(n)$")
-        ax[1].set_ylabel(r"$|\mu_s(n) - \mu_r(n)|$")
+        ax[0].set_ylabel("$\sigma^2(n)$")
+        ax[1].set_ylabel(r"$|\sigma^2_s(n) - \sigma^2_r(n)|$")
 
-        ax[0].plot(x, stream_mean, label = "stream")
-        ax[0].plot(x, reservoir_mean, label = "reservoir")
+        ax[0].plot(x, stream_variance, label = "stream")
+        ax[0].plot(x, reservoir_variance, label = "reservoir")
         ax[0].legend()
 
-        ax[1].plot(x, diff_mean, color = "magenta", label = "s - r")
+        ax[1].plot(x, diff_variance, color = "magenta", label = "s - r")
 
         for offset in offsets:
             ax[0].axvline(x = offset[0] + 1, color = "red", linestyle = "dotted")

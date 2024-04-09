@@ -1,6 +1,7 @@
 import os
 import json
 from config.config import settings
+import numpy as np
 
 
 class PlotData:
@@ -23,21 +24,26 @@ class PlotData:
         with open(os.path.join(output_path, filename)) as f:
             eras = json.load(f)
             self.eras = eras
+            
 
     def get_plot_data(self, stats_labels):
         if self.era_n == "all":
             era_labels = list(self.eras.keys())
         else:
-            for era_n in self.era_n:
-                era_labels.append(f"era_{era_n}")
+            era_labels = []
+            for era_n in sorted(self.era_n):
+                era_label = f"era_{era_n}"
+                if era_label in self.eras:
+                    era_labels.append(era_label)
         print(era_labels)
         
         x = []
+        # [(offset, length)]
         offsets = []
         for era_label in era_labels:
             offset = self.eras[era_label]["index_offset"]
             x = x + [offset + int(i) for i in self.eras[era_label]["stream_data"]]
-            offsets.append(offset)
+            offsets.append((offset, len(self.eras[era_label]["stream_data"])))
         
         data = {}
         data["offsets"] = offsets
@@ -51,7 +57,7 @@ class PlotData:
                     if item[0] == "-":
                         data_era_y.append(data_era_y[-1])
                     elif item[0] == "ND":
-                       data_era_y.append("ND")
+                       data_era_y.append(np.nan)
                     else:
                         data_era_y.append(round(item[self.dimension_n - 1], 2))
                 data_y += data_era_y
