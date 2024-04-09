@@ -71,18 +71,27 @@ class EraHandler:
         
         with open(os.path.join(output_path, "eras.json"), "w", encoding = "utf-8") as f:
             json.dump(output, f, indent = 2)
-    counter = 0
+    #counter = 0
     def is_era_completed(self, index_offset):
         
         # This check is triggered by every insertion happening inside the reservoir buffer.
         # complete_era
         # create a new era
-        EraHandler.counter += 1
-        if EraHandler.counter > 100:
+        #EraHandler.counter += 1
+        # if EraHandler.counter > 100:
+        print("CONDITION: |cvs - cvr| = " + str(abs(self.stream_buffer.coefficientvar[0] - self.reservoir_buffer.coefficientvar[0])))
+        if abs(self.stream_buffer.coefficientvar[0] - self.reservoir_buffer.coefficientvar[0]) > 1.5:
             print("----CHANGING ERA----")
-            EraHandler.counter = 0
+            # EraHandler.counter = 0
+            print("---- Reservoir stats ----")
+            print("Reservoir: ", self.reservoir_buffer.buffer)        
+            print("mean: ", self.reservoir_buffer.mean)
+            print("variance: ", self.reservoir_buffer.variance)
+            print("coefficient_var: ", self.reservoir_buffer.coefficientvar)
             self.complete_era()
             self.eras.append(EraHandler.Era(index_offset))
+            return True
+        return False
 
     def complete_era(self):
         print("completing era")
