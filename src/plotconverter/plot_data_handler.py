@@ -36,7 +36,7 @@ class PlotData:
                 if era_label in self.eras:
                     era_labels.append(era_label)
         print(era_labels)
-        
+        self.era_labels = era_labels
         x = []
         # [(offset, length)]
         offsets = []

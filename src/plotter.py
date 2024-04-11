@@ -9,25 +9,12 @@ from plotconverter.mean_plotter import MeanPlotter
 from plotconverter.variance_plotter import VariancePlotter
 from plotconverter.coefficientvar_plotter import CoefficientVarPlotter
 
-LAST_OUTPUT_FOLDER = settings["output_directory_number"] - 1
-OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "..", "output", str(LAST_OUTPUT_FOLDER))
-FILENAME = "eras.json"
-
-
-def read_eras():
-    with open(os.path.join(OUTPUT_PATH, FILENAME)) as f:
-        eras = json.load(f)
-    return eras
 
 def main():
     
-    # print(OUTPUT_PATH)
-    # eras = read_eras()
-    # pc = PlotConverter(eras, 1, 1)
-    # pc.convert(PlotType.COEFFICIENT_VAR)
-    # pc.plot([1, 3000])
-    mp = MeanPlotter(era_n = [1, 2, 5, 6, 8, 9], simulation_n = "last")
-    mp.plot()
+    
+    mp = CoefficientVarPlotter(era_n = "all", simulation_n = 2, dimension_n = 1)
+    mp.plot([1, 16409])
 
 
     
