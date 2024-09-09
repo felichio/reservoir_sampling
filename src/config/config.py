@@ -18,4 +18,9 @@ def get_output_folder():
     with open(CONFIG_PATH, "w", encoding = "utf-8") as f:
         json.dump(settings_copy, f, indent = 4)
     return no
+
+def get_condition():
+    active_condition = settings_copy["active_condition"]
+    properties = settings_copy["conditions"][active_condition]
+    return {"active_condition": active_condition, "properties": properties}
     

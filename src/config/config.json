@@ -1,8 +1,15 @@
 {
     "input": "simple.csv",
-    "reservoir_size": 5,
+    "reservoir_size": 10,
     "columns": [
-        3
+        1
     ],
-    "output_directory_number": 1205
+    "output_directory_number": 1,
+    "active_condition": "cv_threshold",
+    "conditions": {
+        "cv_threshold": {
+            "threshold": 2
+        },
+        "cusum": {}
+    }
 }
