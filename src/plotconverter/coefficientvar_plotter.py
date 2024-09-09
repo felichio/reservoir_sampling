@@ -15,7 +15,10 @@ class CoefficientVarPlotter:
         difference = []
         zipped = zip(x, y)
         for t in zipped:
-            difference.append(round(abs(t[0] - t[1]), 2))
+            if t[0] != 0.0:
+                difference.append(round(abs((t[0] - t[1]) / t[0]), 2))
+            else:
+                difference.append(0)
         return difference
     
     def plot(self, range = None):
@@ -56,7 +59,7 @@ class CoefficientVarPlotter:
         ax[1].set_xlabel("n")
 
         ax[0].set_ylabel("$Cv(n)$")
-        ax[1].set_ylabel(r"$|Cv_s(n) - Cv_r(n)|$")
+        ax[1].set_ylabel(r"$|(Cv_s(n) - Cv_r(n)) / Cv_s(n)|$")
 
         ax[0].plot(x[low:high], stream_coefficientvar[low:high], label = "stream")
         ax[0].plot(x[low:high], reservoir_coefficientvar[low:high], label = "reservoir")

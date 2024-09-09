@@ -13,11 +13,6 @@ class Event:
         self.event_type = event_type
         self.payload = payload
     
-    def event_type(self):
-        return self.event_type
-    
-    def payload(self):
-        return payload
     
     @staticmethod
     def create_itemrcv(index, value, queue = None):

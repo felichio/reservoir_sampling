@@ -80,18 +80,18 @@ class EraHandler:
         #EraHandler.counter += 1
         # if EraHandler.counter > 100:
 
-        # print("CONDITION: |cvs - cvr| = " + str(abs(self.stream_buffer.coefficientvar[0] - self.reservoir_buffer.coefficientvar[0])))
-        # if abs(self.stream_buffer.coefficientvar[0] - self.reservoir_buffer.coefficientvar[0]) > 0.8:
-        #     print("----CHANGING ERA----")
+        print("CONDITION: |cvs - cvr| = " + str(abs(self.stream_buffer.coefficientvar[0] - self.reservoir_buffer.coefficientvar[0])))
+        if abs((self.stream_buffer.coefficientvar[0] - self.reservoir_buffer.coefficientvar[0]) / self.stream_buffer.coefficientvar[0] ) > 0.7:
+            print("----CHANGING ERA----")
         #     # EraHandler.counter = 0
-        #     print("---- Reservoir stats ----")
-        #     print("Reservoir: ", self.reservoir_buffer.buffer)        
-        #     print("mean: ", self.reservoir_buffer.mean)
-        #     print("variance: ", self.reservoir_buffer.variance)
-        #     print("coefficient_var: ", self.reservoir_buffer.coefficientvar)
-        #     self.complete_era()
-        #     self.eras.append(EraHandler.Era(index_offset))
-        #     return True
+            print("---- Reservoir stats ----")
+            print("Reservoir: ", self.reservoir_buffer.buffer)        
+            print("mean: ", self.reservoir_buffer.mean)
+            print("variance: ", self.reservoir_buffer.variance)
+            print("coefficient_var: ", self.reservoir_buffer.coefficientvar)
+            self.complete_era()
+            self.eras.append(EraHandler.Era(index_offset))
+            return True
         return False
 
     def complete_era(self):
