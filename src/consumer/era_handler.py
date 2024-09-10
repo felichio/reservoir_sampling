@@ -78,6 +78,13 @@ class EraHandler:
         # This check is triggered by every insertion happening inside the reservoir buffer.
         # complete_era
         # create a new era
+
+        print("---- Reservoir stats ----")
+        print("Reservoir: ", self.reservoir_buffer.buffer)        
+        print("mean: ", self.reservoir_buffer.mean)
+        print("variance: ", self.reservoir_buffer.variance)
+        print("coefficient_var: ", self.reservoir_buffer.coefficientvar)
+
         if self.run_condition(index_offset):
             self.complete_era()
             self.eras.append(EraHandler.Era(index_offset))
@@ -91,11 +98,7 @@ class EraHandler:
                 print("CONDITION: |(cvs - cvr) / cvs| = " + str(abs((self.stream_buffer.coefficientvar[0] - self.reservoir_buffer.coefficientvar[0]) / self.stream_buffer.coefficientvar[0] )))
                 if abs((self.stream_buffer.coefficientvar[0] - self.reservoir_buffer.coefficientvar[0]) / self.stream_buffer.coefficientvar[0] ) > condition["properties"]["threshold"]:
                     print("----CHANGING ERA----")
-                    print("---- Reservoir stats ----")
-                    print("Reservoir: ", self.reservoir_buffer.buffer)        
-                    print("mean: ", self.reservoir_buffer.mean)
-                    print("variance: ", self.reservoir_buffer.variance)
-                    print("coefficient_var: ", self.reservoir_buffer.coefficientvar)
+                    
                     return True
 
         elif condition["active_condition"] == "cusum":

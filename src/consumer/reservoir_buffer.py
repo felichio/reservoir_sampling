@@ -70,7 +70,8 @@ class ReservoirBuffer:
     def consume(self, event):
         if event.event_type == EventType.ITEM_RCV:
             print(f"ReservoirBuffer consuming {event.event_type} with payload {event.payload}")
-            logged = False
+            
+
             if len(self.buffer) < self.size:
                 self.buffer.append(event.payload["value"])
                 # Copy the streams moving statistics
@@ -106,17 +107,14 @@ class ReservoirBuffer:
 
                     # check era handler
                     # pass also original stream numbering index
-                    logged = self.era_handler.is_era_completed(event.payload["index"])
+                    
                 else:
                     self.snap(False)
                     pass
 
-            if not logged:
-                print("---- Reservoir stats ----")
-                print("Reservoir: ", self.buffer)        
-                print("mean: ", self.mean)
-                print("variance: ", self.variance)
-                print("coefficient_var: ", self.coefficientvar)
+            self.era_handler.is_era_completed(event.payload["index"])
+
+            
 
 
     def register_era_handler(self, era_handler):
