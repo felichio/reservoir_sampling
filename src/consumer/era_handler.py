@@ -48,6 +48,35 @@ class EraHandler:
             self.fill_dict(output, "stream_coefficientvar", self.stream_coefficientvar_snapshots)
             self.fill_dict(output, "reservoir_coefficientvar", self.reservoir_coefficientvar_snapshots)
             return output
+        
+
+    class Cusum:
+        def __init__(self, properties):
+            self.P = 0
+            self.N = 0
+            self.t = 0
+            self.s_pos = 0
+            self.s_neg = 0
+            self.target_value = properties["target_value"]
+            self.above_threshold = properties["above_threshold"]
+            self.below_threshold = properties["below_threshold"]
+            self.above_tolerance = properties["above_tolerance"]
+            self.below_tolerance = properties["below_tolerance"]
+
+        def calculate(self, x):
+            print("---- Calculating CUSUM -----")
+            self.P = max(0, x - (self.target_value + self.above_tolerance) + self.P)
+            self.N = min(0, x - (self.target_value - self.below_tolerance) + self.N)
+            print("P: " + str(self.P))
+            print("N: " + str(self.N))
+            print("x: " + str(x))
+            if (self.P > self.above_threshold):
+                self.s_pos += 1
+
+            if (self.N < -self.below_threshold):
+                self.s_neg += 1
+            
+            self.t += 1
 
     def __init__(self, stream_buffer, reservoir_buffer):
         self.stream_buffer = stream_buffer
@@ -55,6 +84,12 @@ class EraHandler:
         self.eras = []
         
         self.eras.append(EraHandler.Era(0))
+        self.condition = get_condition()
+
+
+        # Create CUSUM instance in case of the the active condition says so
+        if self.condition["active_condition"] == "cusum":
+            self.cusum = EraHandler.Cusum(self.condition["properties"])
 
 
     def write_to_output(self):
@@ -85,24 +120,28 @@ class EraHandler:
         print("variance: ", self.reservoir_buffer.variance)
         print("coefficient_var: ", self.reservoir_buffer.coefficientvar)
 
-        if self.run_condition(index_offset):
+        if self.run_condition():
             self.complete_era()
             self.eras.append(EraHandler.Era(index_offset))
             return True
     
-    def run_condition(self, index_offset):
-        condition = get_condition()
+    def run_condition(self):
+        
 
-        if condition["active_condition"] == "cv_threshold":
+        if self.condition["active_condition"] == "cv_threshold":
             if self.stream_buffer.coefficientvar[0] != "ND" and self.reservoir_buffer.coefficientvar[0] != "ND" and self.stream_buffer.coefficientvar[0] != 0:
                 print("CONDITION: |(cvs - cvr) / cvs| = " + str(abs((self.stream_buffer.coefficientvar[0] - self.reservoir_buffer.coefficientvar[0]) / self.stream_buffer.coefficientvar[0] )))
-                if abs((self.stream_buffer.coefficientvar[0] - self.reservoir_buffer.coefficientvar[0]) / self.stream_buffer.coefficientvar[0] ) > condition["properties"]["threshold"]:
+                if abs((self.stream_buffer.coefficientvar[0] - self.reservoir_buffer.coefficientvar[0]) / self.stream_buffer.coefficientvar[0] ) > self.condition["properties"]["threshold"]:
                     print("----CHANGING ERA----")
-                    
                     return True
 
-        elif condition["active_condition"] == "cusum":
-            pass
+        elif self.condition["active_condition"] == "cusum":
+            x = self.stream_buffer.mean[0] - self.reservoir_buffer.mean[0]
+            self.cusum.calculate(x)
+            
+            if self.cusum.s_pos > 0 or self.cusum.s_neg > 0:
+                print("----CHANGING ERA----")
+                return True
         return False
 
 
@@ -128,6 +167,10 @@ class EraHandler:
         # reset stream_buffer and reservoir_buffer states
         self.stream_buffer.clear_state()
         self.reservoir_buffer.clear_state()
+
+        # create a new CUSUM instance to clear the previous state
+        if self.condition["active_condition"] == "cusum":
+            self.cusum = EraHandler.Cusum(self.condition["properties"])
     
     def consume(self, event):
         if event.event_type == EventType.EOS:
