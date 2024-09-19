@@ -3,8 +3,8 @@ from plotconverter.histogram_plotter import HistogramPlotter
 
 
 def main():
-    hp = HistogramPlotter(simulation_n=[8, 9])
-    hp.read_data()
+    hp = HistogramPlotter(simulation_n="last")
+    hp.plot()
     
 
 

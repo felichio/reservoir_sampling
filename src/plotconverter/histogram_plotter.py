@@ -1,6 +1,7 @@
 import json
 import os
 from config.config import settings
+import matplotlib.pyplot as plt
 
 class HistogramPlotter:
     
@@ -28,7 +29,7 @@ class HistogramPlotter:
     
 
     def prepare_data(self):
-        output_data = {}
+        self.output_data = {}
         for simulation_n in self.simulations:
             if self.era_n == "all":
                 era_labels = list(self.simulations[simulation_n].keys())
@@ -74,6 +75,25 @@ class HistogramPlotter:
 
             output_simulation_data["stream_data"] = stream_data
             output_simulation_data["reservoir_data"] = reservoir_data
-            output_data[simulation_n] = output_simulation_data
-        print(output_data)
+            self.output_data[simulation_n] = output_simulation_data
+        
+        
+
+    
+    def plot(self):
+        number_of_bins = settings["bins"]
+        for simulation_n in self.output_data:
+            stream_data = [x for item in self.output_data[simulation_n]["stream_data"] for x in item]
+            reservoir_data = [x for item in self.output_data[simulation_n]["reservoir_data"] for x in item]
+
+            min_stream = int(min(stream_data))
+            max_stream = int(max(stream_data))
+            
+
+
+            plt.hist(stream_data, number_of_bins, color='yellow', edgecolor='black')
+            plt.ticklabel_format(style='plain')
+            plt.show()
+
+
         
