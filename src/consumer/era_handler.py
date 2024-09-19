@@ -1,6 +1,7 @@
 from event.event import EventType
 from config.config import get_output_folder
 from config.config import get_condition
+from config.config import settings
 import os
 import copy
 import json
@@ -102,6 +103,7 @@ class EraHandler:
             os.makedirs(output_path)
         
         output = {}
+        output["reservoir_size"] = settings["reservoir_size"]
         for i, item in enumerate(self.eras):
             output[f"era_{i + 1}"] = item.to_json()
         

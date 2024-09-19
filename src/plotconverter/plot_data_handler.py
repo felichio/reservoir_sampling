@@ -29,6 +29,7 @@ class PlotData:
     def get_plot_data(self, stats_labels):
         if self.era_n == "all":
             era_labels = list(self.eras.keys())
+            era_labels.remove("reservoir_size")
         else:
             era_labels = []
             for era_n in sorted(self.era_n):
