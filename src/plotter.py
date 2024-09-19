@@ -13,8 +13,8 @@ from plotconverter.coefficientvar_plotter import CoefficientVarPlotter
 def main():
     
     
-    mp = CoefficientVarPlotter(era_n = "all", simulation_n = 2, dimension_n = 1)
-    mp.plot([1, 16409])
+    mp = CoefficientVarPlotter(era_n = "all", simulation_n = "last", dimension_n = 1)
+    mp.plot()
 
 
     
