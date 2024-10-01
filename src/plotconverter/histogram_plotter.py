@@ -2,6 +2,7 @@ import json
 import os
 from config.config import settings
 import matplotlib.pyplot as plt
+import numpy as np
 
 class HistogramPlotter:
     
@@ -73,9 +74,13 @@ class HistogramPlotter:
                         break
                 reservoir_data.append(reservoir_data_era)
 
+            # append number of eras
+            output_simulation_data["number_of_eras"] = len(era_labels)
+
             output_simulation_data["stream_data"] = stream_data
             output_simulation_data["reservoir_data"] = reservoir_data
             self.output_data[simulation_n] = output_simulation_data
+            
         
         
 
@@ -85,14 +90,63 @@ class HistogramPlotter:
         for simulation_n in self.output_data:
             stream_data = [x for item in self.output_data[simulation_n]["stream_data"] for x in item]
             reservoir_data = [x for item in self.output_data[simulation_n]["reservoir_data"] for x in item]
+            
+            min_stream = min(stream_data)
+            max_stream = max(stream_data)
+            min_reservoir = min(reservoir_data)
+            max_reservoir = max(reservoir_data)
 
-            min_stream = int(min(stream_data))
-            max_stream = int(max(stream_data))
+            fig, ax = plt.subplots(2, 2)
+
+            L = max_stream - min_stream
+
+            s = ax[0, 0].hist(stream_data, number_of_bins, color='yellow', edgecolor='black', )
+            r = ax[1, 0].hist(reservoir_data, number_of_bins, color='blue', edgecolor='black', range=(min_stream, max_stream))
+
+            sd = ax[0, 1].hist(stream_data, number_of_bins, color='yellow', edgecolor='black', density=True)
+            rd = ax[1, 1].hist(reservoir_data, number_of_bins, color='blue', edgecolor='black', range=(min_stream, max_stream), density=True)
+            print(s)
+            print(r)
             
 
+            ax[0, 0].ticklabel_format(style='plain')
+            ax[1, 0].ticklabel_format(style='plain')
+            ax[0, 1].ticklabel_format(style='plain')
+            ax[1, 1].ticklabel_format(style='plain')
 
-            plt.hist(stream_data, number_of_bins, color='yellow', edgecolor='black')
-            plt.ticklabel_format(style='plain')
+            ax[0, 0].legend(("stream",))
+            ax[0, 1].legend(("stream",))
+            ax[1, 0].legend(("reservoir",))
+            ax[1, 1].legend(("reservoir",))
+
+            ax[0, 0].set_ylabel("$\sum_{j=1}^{N} χ(x_j, I_i)$")
+            ax[1, 0].set_ylabel("$\sum_{j=1}^{M} χ(y_j, I_i)$")
+            ax[0, 1].set_ylabel(r"$\frac{K}{NL}\sum_{j=1}^{N} χ(x_j, I_i)$")
+            ax[1, 1].set_ylabel(r"$\frac{K}{ML}\sum_{j=1}^{M} χ(y_j, I_i)$")
+
+            Eras = self.output_data[simulation_n]["number_of_eras"]
+            r = self.output_data[simulation_n]["reservoir_size"]
+            K = number_of_bins
+            N = len(stream_data)
+            M = len(reservoir_data)
+            Lr = max_reservoir - min_reservoir
+            compression = round((1 - M / N) * 100, 2)
+            print("No. eras = " + str(Eras))
+            print("r size = " + str(r))
+            print("K = " + str(K))
+            print("N = " + str(N))
+            print("M = " + str(M))
+            print("L = Ls = " + str(int(L)))
+            print("Lr = " + str(int(Lr)))
+            print("compression = " + str(compression) + "%")
+
+            
+            histogram_distance = sum(map(lambda e: abs(e[0] - e[1]) * L / K, zip(sd[0], rd[0])))
+            # histogram_distance_2 = sum(map(lambda e: abs((e[0] / N) - (e[1] / M)), zip(s[0], r[0])))
+            print("Histogram Distance = " + str(histogram_distance))
+            # print(histogram_distance_2)
+            
+            
             plt.show()
 
 
