@@ -1,6 +1,7 @@
 import json
 import os
 from config.config import settings
+from config.config import get_condition
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -124,6 +125,8 @@ class HistogramPlotter:
             ax[0, 1].set_ylabel(r"$\frac{K}{NL}\sum_{j=1}^{N} χ(x_j, I_i)$")
             ax[1, 1].set_ylabel(r"$\frac{K}{ML}\sum_{j=1}^{M} χ(y_j, I_i)$")
 
+
+            threshold = get_condition()["properties"]["threshold"]
             Eras = self.output_data[simulation_n]["number_of_eras"]
             r = self.output_data[simulation_n]["reservoir_size"]
             K = number_of_bins
@@ -133,6 +136,8 @@ class HistogramPlotter:
             compression = round((1 - M / N) * 100, 2)
             print("No. eras = " + str(Eras))
             print("r size = " + str(r))
+            print("threshold: " + str(threshold))
+
             print("K = " + str(K))
             print("N = " + str(N))
             print("M = " + str(M))
