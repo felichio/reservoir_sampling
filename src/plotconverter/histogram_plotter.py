@@ -88,6 +88,7 @@ class HistogramPlotter:
     
     def plot(self):
         number_of_bins = settings["bins"]
+        output = {}
         for simulation_n in self.output_data:
             stream_data = [x for item in self.output_data[simulation_n]["stream_data"] for x in item]
             reservoir_data = [x for item in self.output_data[simulation_n]["reservoir_data"] for x in item]
@@ -106,8 +107,8 @@ class HistogramPlotter:
 
             sd = ax[0, 1].hist(stream_data, number_of_bins, color='yellow', edgecolor='black', density=True)
             rd = ax[1, 1].hist(reservoir_data, number_of_bins, color='blue', edgecolor='black', range=(min_stream, max_stream), density=True)
-            print(s)
-            print(r)
+            #print(s)
+            #print(r)
             
 
             ax[0, 0].ticklabel_format(style='plain')
@@ -120,8 +121,8 @@ class HistogramPlotter:
             ax[1, 0].legend(("reservoir",))
             ax[1, 1].legend(("reservoir",))
 
-            ax[0, 0].set_ylabel("$\sum_{j=1}^{N} χ(x_j, I_i)$")
-            ax[1, 0].set_ylabel("$\sum_{j=1}^{M} χ(y_j, I_i)$")
+            ax[0, 0].set_ylabel(r"$\sum_{j=1}^{N} χ(x_j, I_i)$")
+            ax[1, 0].set_ylabel(r"$\sum_{j=1}^{M} χ(y_j, I_i)$")
             ax[0, 1].set_ylabel(r"$\frac{K}{NL}\sum_{j=1}^{N} χ(x_j, I_i)$")
             ax[1, 1].set_ylabel(r"$\frac{K}{ML}\sum_{j=1}^{M} χ(y_j, I_i)$")
 
@@ -133,7 +134,9 @@ class HistogramPlotter:
             N = len(stream_data)
             M = len(reservoir_data)
             Lr = max_reservoir - min_reservoir
-            compression = round((1 - M / N) * 100, 2)
+            compression = round((1 - M / N), 4)
+            print("------------------------------")
+            print("Simulation no. " + str(simulation_n))
             print("No. eras = " + str(Eras))
             print("r size = " + str(r))
             print("threshold: " + str(threshold))
@@ -143,16 +146,35 @@ class HistogramPlotter:
             print("M = " + str(M))
             print("L = Ls = " + str(int(L)))
             print("Lr = " + str(int(Lr)))
-            print("compression = " + str(compression) + "%")
+            print("compression = " + str(round(compression * 100, 2)) + "%")
 
             
             histogram_distance = sum(map(lambda e: abs(e[0] - e[1]) * L / K, zip(sd[0], rd[0])))
             # histogram_distance_2 = sum(map(lambda e: abs((e[0] / N) - (e[1] / M)), zip(s[0], r[0])))
             print("Histogram Distance = " + str(histogram_distance))
             # print(histogram_distance_2)
+            metric = round(compression / histogram_distance, 3)
+
+            print("Metric = " + str(metric))
+
+            output[simulation_n] = {
+                "simulation_number": simulation_n,
+                "number_of_eras": Eras,
+                "buffer_size": r,
+                "threshold": threshold,
+                "K": K,
+                "N": N,
+                "M": M,
+                "L": L,
+                "Lr": Lr,
+                "compression": compression,
+                "histogram_distance": histogram_distance.item(),
+                "metric": metric
+            }
             
             
-            plt.show()
+            #plt.show()
+        return output
 
 
         
