@@ -36,6 +36,8 @@ class HistogramPlotter:
             if self.era_n == "all":
                 era_labels = list(self.simulations[simulation_n].keys())
                 era_labels.remove("reservoir_size")
+                era_labels.remove("active_condition")
+                era_labels.remove("conditions")
             else:
                 era_labels = []
                 for era_n in sorted(self.era_n):
@@ -48,6 +50,8 @@ class HistogramPlotter:
 
             # append reservoir_size
             output_simulation_data["reservoir_size"] = simulation_data["reservoir_size"]
+            output_simulation_data["active_condition"] = simulation_data["active_condition"]
+            output_simulation_data["conditions"] = simulation_data["conditions"]
 
             # append stream data
             stream_data = []
@@ -127,7 +131,7 @@ class HistogramPlotter:
             ax[1, 1].set_ylabel(r"$\frac{K}{ML}\sum_{j=1}^{M} χ(y_j, I_i)$")
 
 
-            threshold = get_condition()["properties"]["threshold"]
+            threshold = self.output_data[simulation_n]["conditions"]["threshold"]
             Eras = self.output_data[simulation_n]["number_of_eras"]
             r = self.output_data[simulation_n]["reservoir_size"]
             K = number_of_bins

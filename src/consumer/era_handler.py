@@ -104,6 +104,8 @@ class EraHandler:
         
         output = {}
         output["reservoir_size"] = settings["reservoir_size"]
+        output["active_condition"] = settings["active_condition"]
+        output["conditions"] = settings["conditions"][settings["active_condition"]]
         for i, item in enumerate(self.eras):
             output[f"era_{i + 1}"] = item.to_json()
         

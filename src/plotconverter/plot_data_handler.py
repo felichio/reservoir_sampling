@@ -30,6 +30,8 @@ class PlotData:
         if self.era_n == "all":
             era_labels = list(self.eras.keys())
             era_labels.remove("reservoir_size")
+            era_labels.remove("active_condition")
+            era_labels.remove("conditions")
         else:
             era_labels = []
             for era_n in sorted(self.era_n):
