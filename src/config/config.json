@@ -4,11 +4,12 @@
     "columns": [
         1
     ],
-    "output_directory_number": 14,
-    "active_condition": "cusum",
+    "output_directory_number": 247,
+    "bins": 100,
+    "active_condition": "cv_threshold",
     "conditions": {
         "cv_threshold": {
-            "threshold": 0.7
+            "threshold": 0.2
         },
         "cusum": {
             "target_value": 0,
