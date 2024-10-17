@@ -2,7 +2,7 @@ from plotconverter.plot_data_handler import PlotData
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
-
+from config.config import get_condition
 
 class CoefficientVarPlotter:
 
@@ -16,7 +16,7 @@ class CoefficientVarPlotter:
         zipped = zip(x, y)
         for t in zipped:
             if t[0] != 0.0:
-                difference.append(round(abs((t[0] - t[1]) / t[0]), 2))
+                difference.append(round(abs((t[0] - t[1]) / t[0]), 3))
             else:
                 difference.append(0)
         return difference
@@ -53,22 +53,35 @@ class CoefficientVarPlotter:
                     reservoir_coefficientvar.insert(kindex, np.nan)
         
         diff_coefficientvar = self.diff(stream_coefficientvar, reservoir_coefficientvar)
+        
 
         fig, ax = plt.subplots(2, 1)
-        ax[0].set_xlabel("n")
-        ax[1].set_xlabel("n")
+        ax[0].set_xlabel("t")
+        ax[1].set_xlabel("t")
 
-        ax[0].set_ylabel("$Cv(n)$")
-        ax[1].set_ylabel(r"$|(Cv_s(n) - Cv_r(n)) / Cv_s(n)|$")
+        ax[0].set_ylabel("$Cv(t)$")
+        ax[1].set_ylabel(r"$d_{s-b(t)}$")
 
         ax[0].plot(x[low:high], stream_coefficientvar[low:high], label = "stream")
-        ax[0].plot(x[low:high], reservoir_coefficientvar[low:high], label = "reservoir")
+        ax[0].plot(x[low:high], reservoir_coefficientvar[low:high], label = "buffer")
         ax[0].legend()
 
         ax[1].plot(x[low:high], diff_coefficientvar[low:high], color = "magenta", label = "s - r")
 
         ax[0].axhline(y = 0, linestyle = "dashed", color = "black")
         ax[1].axhline(y = 0, linestyle = "dashed", color = "black")
+
+        ax[0].set_xticks([])
+        ax[1].set_xticks([])
+
+
+        
+        condition = get_condition()
+        if condition["active_condition"] == "cv_threshold":
+            ytick = condition["properties"]["threshold"]
+            ax[1].axhline(y = ytick, linestyle = "dashed", color = "black")
+        
+        
 
         for offset, era_label in zip(offsets, self.plot_data.era_labels):
             if (offset[0] + 1) in x[low:high]:

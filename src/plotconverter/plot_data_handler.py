@@ -62,7 +62,7 @@ class PlotData:
                     elif item[0] == "ND":
                        data_era_y.append(np.nan)
                     else:
-                        data_era_y.append(round(item[self.dimension_n - 1], 2))
+                        data_era_y.append(round(item[self.dimension_n - 1], 3))
                 data_y += data_era_y
             data[stat] = data_y
         return data
