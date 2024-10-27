@@ -59,8 +59,8 @@ class CoefficientVarPlotter:
         ax[0].set_xlabel("t")
         ax[1].set_xlabel("t")
 
-        ax[0].set_ylabel("$Cv(t)$")
-        ax[1].set_ylabel(r"$d_{s-b(t)}$")
+        ax[0].set_ylabel("$Cv_{(t)}$")
+        ax[1].set_ylabel(r"$d_{(s-b)(t)}$")
 
         ax[0].plot(x[low:high], stream_coefficientvar[low:high], label = "stream")
         ax[0].plot(x[low:high], reservoir_coefficientvar[low:high], label = "buffer")

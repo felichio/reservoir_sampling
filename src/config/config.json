@@ -4,7 +4,7 @@
     "columns": [
         1
     ],
-    "output_directory_number": 247,
+    "output_directory_number": 0,
     "bins": 100,
     "active_condition": "cv_threshold",
     "conditions": {
