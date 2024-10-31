@@ -4,6 +4,7 @@ from config.config import settings
 from config.config import get_condition
 import matplotlib.pyplot as plt
 import numpy as np
+import math
 
 class HistogramPlotter:
     
@@ -86,8 +87,12 @@ class HistogramPlotter:
             output_simulation_data["reservoir_data"] = reservoir_data
             self.output_data[simulation_n] = output_simulation_data
             
-        
-        
+    @staticmethod  
+    def kl_distance_helper(p, q, L, K):
+        if p == 0 or q == 0:
+            return 0
+        else:
+            return p * math.log(p / q) * (L / K)
 
     
     def plot(self):
@@ -158,12 +163,15 @@ class HistogramPlotter:
 
             
             histogram_distance = sum(map(lambda e: abs(e[0] - e[1]) * L / K, zip(sd[0], rd[0])))
+            KL_distance = sum(map(lambda e: HistogramPlotter.kl_distance_helper(e[0], e[1], L, K), zip(sd[0], rd[0])))
             # histogram_distance_2 = sum(map(lambda e: abs((e[0] / N) - (e[1] / M)), zip(s[0], r[0])))
             print("Histogram Distance = " + str(histogram_distance))
+            print("KL_distance = " + str(KL_distance))
             # print(histogram_distance_2)
             metric = round(compression / histogram_distance, 3)
-
+            KL_metric = round(compression / KL_distance, 3)
             print("Metric = " + str(metric))
+            print("KL_metric = " + str(KL_metric))
 
             output[simulation_n] = {
                 "simulation_number": simulation_n,
@@ -177,11 +185,13 @@ class HistogramPlotter:
                 "Lr": Lr,
                 "compression": compression,
                 "histogram_distance": histogram_distance.item(),
-                "metric": metric
+                "KL_distance": KL_distance.item(),
+                "metric": metric,
+                "KL_metric": KL_metric
             }
             
             
-            plt.show()
+            #plt.show()
         return output
 
 
