@@ -53,11 +53,11 @@ class MeanPlotter:
         
 
         fig, ax = plt.subplots(2, 1)
-        ax[0].set_xlabel("n")
-        ax[1].set_xlabel("n")
+        ax[0].set_xlabel("t")
+        ax[1].set_xlabel("t")
 
-        ax[0].set_ylabel("$\mu(n)$")
-        ax[1].set_ylabel(r"$|\mu_s(n) - \mu_r(n)|$")
+        ax[0].set_ylabel("$\mu(t)$")
+        ax[1].set_ylabel(r"$|\mu_s(t) - \mu_r(t)|$")
 
         ax[0].plot(x[low:high], stream_mean[low:high], label = "stream")
         ax[0].plot(x[low:high], reservoir_mean[low:high], label = "reservoir")
@@ -68,7 +68,9 @@ class MeanPlotter:
         ax[0].axhline(y = 0, linestyle = "dashed", color = "black")
         ax[1].axhline(y = 0, linestyle = "dashed", color = "black")
 
-        
+        ax[0].set_xticks([])
+        ax[1].set_xticks([])
+
         for offset, era_label in zip(offsets, self.plot_data.era_labels):
             if (offset[0] + 1) in x[low:high]:
                 ax[0].axvline(x = offset[0] + 1, color = "red", linestyle = "dotted")

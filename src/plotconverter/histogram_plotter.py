@@ -130,14 +130,14 @@ class HistogramPlotter:
             ax[1, 0].legend(("buffer",))
             ax[1, 1].legend(("buffer",))
 
-            ax[0, 0].set_ylabel(r"$\sum_{j=1}^{N} χ(x_j, I_i)$")
-            ax[1, 0].set_ylabel(r"$\sum_{j=1}^{M} χ(y_j, I_i)$")
-            ax[0, 1].set_ylabel(r"$\frac{K}{NL}\sum_{j=1}^{N} χ(x_j, I_i)$")
-            ax[1, 1].set_ylabel(r"$\frac{K}{ML}\sum_{j=1}^{M} χ(y_j, I_i)$")
-            ax[0, 0].set_xlabel(r"$x_j$")
-            ax[1, 0].set_xlabel(r"$y_j$")
-            ax[0, 1].set_xlabel(r"$x_j$")
-            ax[1, 1].set_xlabel(r"$y_j$")
+            ax[0, 0].set_ylabel(r"$c_x(I_i) = \sum_{j=1}^{N} χ(x_j, I_i)$", fontsize=14)
+            ax[1, 0].set_ylabel(r"$c_y(I_i) = \sum_{j=1}^{M} χ(y_j, I_i)$", fontsize=14)
+            ax[0, 1].set_ylabel(r"$h_x(I_i) = \frac{K}{NL}\sum_{j=1}^{N} χ(x_j, I_i)$", fontsize=14)
+            ax[1, 1].set_ylabel(r"$h_y(I_i) = \frac{K}{ML}\sum_{j=1}^{M} χ(y_j, I_i)$", fontsize=14)
+            ax[0, 0].set_xlabel(r"$x_j$", fontsize=14)
+            ax[1, 0].set_xlabel(r"$y_j$", fontsize=14)
+            ax[0, 1].set_xlabel(r"$x_j$", fontsize=14)
+            ax[1, 1].set_xlabel(r"$y_j$", fontsize=14)
 
 
             threshold = self.output_data[simulation_n]["conditions"]["threshold"]
@@ -191,7 +191,7 @@ class HistogramPlotter:
             }
             
             
-            #plt.show()
+            plt.show()
         return output
 
 
